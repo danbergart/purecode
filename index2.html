@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Source Code Playing Cards</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script
+      src="https://unpkg.com/tesseract.js@4.1.1/dist/tesseract.min.js"
+      defer
+    ></script>
+  </head>
+  <body>
+    <h1>Source Code Playing Cards</h1>
+    <p>Paste or type a card JSON below, scan a photo, and click render.</p>
+
+    <div class="buttons top">
+      <button id="scanBtn" class="primary" type="button">Scan Card Code</button>
+      <button id="typeBtn" class="ghost" type="button">
+        Type code instead
+      </button>
+    </div>
+
+    <div id="editorWrap" class="editor" aria-label="JSON editor">
+      <pre id="hl" class="code"></pre>
+      <textarea id="cardInput" spellcheck="false">
+{
+  "rank": "8",
+  "suit": "clubs",
+  "type": "number"
+}</textarea
+      >
+    </div>
+
+    <div class="buttons">
+      <button id="renderBtn" type="button">Render Card</button>
+      <button id="examplesBtn" type="button">Examples</button>
+    </div>
+
+    <input id="imageInput" type="file" accept="image/*" style="display: none" />
+
+    <canvas
+      id="cardCanvas"
+      width="360"
+      height="528"
+      aria-label="card canvas"
+    ></canvas>
+
+    <div id="camModal" class="cam-modal hidden" aria-hidden="true">
+      <div
+        class="cam-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Scan card code"
+      >
+        <video id="camVideo" playsinline autoplay muted></video>
+        <div class="cam-actions">
+          <button id="captureBtn" class="primary" type="button">Capture</button>
+          <button id="selectCamBtn" class="ghost" type="button">
+            Select camera
+          </button>
+          <button id="cancelCamBtn" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>
