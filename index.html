@@ -5,28 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Source Code Playing Cards</title>
     <link rel="stylesheet" href="./style.css" />
+    <!-- Client-side OCR -->
+    <script
+      src="https://unpkg.com/tesseract.js@4.1.1/dist/tesseract.min.js"
+      defer
+    ></script>
   </head>
   <body>
-    <!-- Top buttons -->
-    <div class="buttons buttons-top">
+    <!-- Buttons -->
+    <div class="buttons">
       <button id="scanBtn">Scan Card Code</button>
       <button id="examplesBtn">Examples</button>
     </div>
 
-    <!-- Editor (always visible, starts empty) -->
+    <!-- JSON editor -->
     <div class="editor" aria-label="JSON editor">
       <pre id="hl" class="code"></pre>
-      <textarea
-        id="cardInput"
-        spellcheck="false"
-        autocomplete="off"
-        autocapitalize="off"
-        autocorrect="off"
-      ></textarea>
+      <textarea id="cardInput" spellcheck="false"></textarea>
     </div>
 
-    <!-- Bottom primary action -->
-    <div class="buttons buttons-bottom">
+    <!-- Render button -->
+    <div class="buttons">
       <button id="renderBtn" class="primary">Render Card</button>
     </div>
 
@@ -38,21 +37,28 @@
       aria-label="card canvas"
     ></canvas>
 
-    <!-- Optional: override OCR URL with window.VISION_FN_URL before app.js -->
+    <!-- Hidden input for scan -->
+    <input
+      id="imageInput"
+      type="file"
+      accept="image/*"
+      capture="environment"
+      style="display: none"
+    />
+
     <script src="./app.js" defer></script>
-<script>
-function sendHeight() {
-  window.parent.postMessage(
-    { type: "resize-iframe", height: document.body.scrollHeight },
-    "*"
-  );
-}
 
-new ResizeObserver(sendHeight).observe(document.body);
-sendHeight();
-</script>
+    <!-- iFrame auto-resize -->
+    <script>
+      function sendHeight() {
+        window.parent.postMessage(
+          { type: "resize-iframe", height: document.body.scrollHeight },
+          "*"
+        );
+      }
 
-
-    
+      new ResizeObserver(sendHeight).observe(document.body);
+      sendHeight();
+    </script>
   </body>
 </html>
