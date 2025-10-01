@@ -1,188 +1,100 @@
-:root {
-  --page: #f3f3f3; /* light grey page (Shopify friendly) */
-  --text: #111; /* dark page text */
-  --muted: #666;
+:root{
+  --bg:#eee;           /* page bg (fits Shopify) */
+  --panel:#000;        /* code editor panel */
+  --ink:#111;          /* body text */
+  --muted:#666;
 
-  --panel: #000; /* editor background (console) */
-  --line: #dcdcdc; /* thin borders on light UI */
+  /* syntax */
+  --tok-key:#ff9900;
+  --tok-str:#33ff66;
+  --tok-num:#00ccff;
+  --tok-punc:#bdbdbd;
 
-  /* syntax colors */
-  --tok-key: #ff9900;
-  --tok-str: #33ff66;
-  --tok-num: #00ccff;
-  --tok-punc: #bdbdbd;
-
-  --primary: #111; /* filled primary button bg */
-  --primaryText: #fff; /* filled primary button text */
-}
-
-* {
-  box-sizing: border-box;
+  --btn:#111;
+  --btn-ink:#fff;
+  --btn-outline:#1112;
+  --radius:14px;
 }
 
-body {
-  margin: 0;
-  padding: 24px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New",
-    monospace;
-  background: var(--page);
-  color: var(--text);
-  text-align: center;
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  font:16px/1.45 ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New", monospace;
+  color:var(--ink);
+  background:var(--bg);
 }
 
-/* Buttons */
-.buttons {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
+/* ---------- layout spacing ---------- */
+.container{
+  max-width:920px;
+  margin:28px auto;
+  padding:0 16px;
+}
+.stack > * + *{ margin-top:14px; }          /* consistent vertical gaps */
+.row{
+  display:flex; gap:12px; flex-wrap:wrap;
+}
+.row.center{ justify-content:center; }
+
+/* ---------- buttons ---------- */
+button{
+  appearance:none; border:1px solid var(--btn-outline);
+  background:#fff; color:var(--ink);
+  padding:12px 16px; border-radius:12px; cursor:pointer;
+  font:inherit;
+}
+button.primary{
+  background:var(--btn); color:var(--btn-ink); border-color:var(--btn);
+}
+button:disabled{ opacity:.6; cursor:not-allowed; }
+
+/* ---------- editor ---------- */
+.editor{
+  position:relative; background:var(--panel);
+  border:1px solid #fff6; border-radius:var(--radius);
+  overflow:hidden;
+}
+pre.code, textarea#cardInput{
+  margin:0; padding:14px; font:14px/1.4 inherit; white-space:pre-wrap; word-break:break-word;
+  min-height:180px;
+}
+pre.code{ color:#fff; pointer-events:none; }
+.k{color:var(--tok-key);} .s{color:var(--tok-str);}
+.n{color:var(--tok-num);} .p{color:var(--tok-punc);}
+textarea#cardInput{
+  position:absolute; inset:0; background:transparent;
+  color:#fff; caret-color:#fff; border:none; outline:none; resize:vertical;
 }
 
-.buttons-top {
-  margin: 4px 0 14px;
-}
-.buttons-bottom {
-  margin: 14px 0 20px;
-}
-
-button {
-  background: #fff;
-  color: var(--text);
-  border: 1px solid var(--line);
-  padding: 10px 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 14px;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
-  transition: transform 80ms ease, filter 120ms ease, opacity 120ms ease;
-}
-button:hover {
-  background: #fafafa;
-}
-button:active {
-  transform: translateY(1px);
-}
-button.busy {
-  opacity: 0.65;
-  pointer-events: none;
+/* ---------- canvas ---------- */
+canvas{
+  display:block; width:360px; height:auto;
+  background:#fff; border-radius:var(--radius);
+  box-shadow:0 0 0 1px rgba(0,0,0,.06);
+  margin:0 auto;
 }
 
-button.primary {
-  background: var(--primary);
-  color: var(--primaryText);
-  border-color: #000;
+/* ---------- camera overlay (top-aligned for iframes) ---------- */
+#camOverlay{
+  position:fixed; inset:0; z-index:9999;
+  background:rgba(255,255,255,.96);              /* light, not black */
 }
-button.primary:hover {
-  filter: brightness(1.05);
+#camSheet{
+  position:absolute; top:8px; left:0; right:0;   /* TOP aligned */
+  width:min(640px, 96vw);
+  margin:0 auto 24px;
+  padding:10px 10px 14px;
+  background:#fff; border:1px solid #00000014;
+  border-radius:14px; box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
+#camVideo{ width:100%; height:auto; display:block; border-radius:10px; background:#000; }
+.camBars{ display:flex; gap:10px; margin-top:10px; }
+.camBars > *{ flex:1; }
+.camNote{ font-size:12px; color:#444; margin-top:8px; text-align:center; }
 
-/* Editor (textarea on top of highlighted <pre>) */
-.editor {
-  position: relative;
-  width: min(920px, 90vw);
-  margin: 0 auto;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  text-align: left;
-  overflow: hidden;
-}
-
-pre.code,
-textarea#cardInput {
-  margin: 0;
-  padding: 14px;
-  font: 14px/1.4 ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New",
-    monospace;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-pre.code {
-  color: #fff;
-  pointer-events: none;
-  min-height: 160px;
-  opacity: 0.35; /* dim so white typed text is readable */
-}
-
-/* syntax tokens */
-.k {
-  color: var(--tok-key);
-}
-.s {
-  color: var(--tok-str);
-}
-.n {
-  color: var(--tok-num);
-}
-.p {
-  color: var(--tok-punc);
-}
-
-textarea#cardInput {
-  position: absolute;
-  inset: 0;
-  background: transparent;
-  color: #fff; /* <-- visible white typing */
-  -webkit-text-fill-color: #fff; /* fix for some mobile browsers */
-  caret-color: #fff;
-  border: none;
-  outline: none;
-  resize: vertical;
-  min-height: 160px;
-}
-
-/* Card canvas — white card on light page */
-canvas {
-  border: none;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 6px 18px rgba(0, 0, 0, 0.06);
-  width: 360px;
-  height: auto;
-  margin: 0 auto;
-  display: block;
-}
-
-/* Overlay prevents page scroll when open */
-body.scan-open {
-  overflow: hidden;
-}
-
-/* ===== Mobile tweaks ===== */
-@media (max-width: 640px) {
-  body {
-    padding: 18px;
-  }
-
-  pre.code,
-  textarea#cardInput {
-    font-size: 16px;
-    line-height: 1.45;
-  }
-  pre.code {
-    min-height: 220px;
-  }
-  textarea#cardInput {
-    min-height: 220px;
-  }
-
-  .editor {
-    width: 94vw;
-  }
-
-  .buttons {
-    gap: 10px;
-  }
-  button {
-    width: 94vw;
-    max-width: 520px;
-    padding: 14px 16px;
-    font-size: 16px;
-  }
-  canvas {
-    width: 86vw;
-    max-width: 420px;
-  }
+/* mobile tweaks */
+@media (max-width:640px){
+  pre.code, textarea#cardInput{ font-size:16px; }
+  canvas{ width:86vw; }
 }
