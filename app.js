@@ -1,6 +1,6 @@
 /* =========================================================
    Source Code Playing Cards — overlay camera + OCR + render
-   (editor always visible; prevent mobile keyboard during scan)
+   (editor visible, starts empty; prevent mobile keyboard during scan)
    ========================================================= */
 
 /* --------- OCR endpoint (declare once) --------- */
@@ -47,11 +47,11 @@ function highlight(text){
   }
   hlEl.innerHTML = out.replace(/\n/g,"<br>");
 }
-// start empty; do NOT focus (prevents mobile keyboard)
+// Start empty; DO NOT focus (prevents mobile keyboard pop)
 if(taEl){ taEl.value = ""; highlight(taEl.value); }
 
 /* =========================================================
-   OCR helpers (snap scanner result to 53 valid cards)
+   OCR helpers (snap scanner result to valid cards)
    ========================================================= */
 function normalizeScanned(raw){
   return String(raw||"")
@@ -59,10 +59,8 @@ function normalizeScanned(raw){
     .replace(/—|–/g,"-").replace(/[·•●◦]/g,"·")
     .replace(/\u00A0/g," ").replace(/[^\S\r\n]+/g," ")
     .replace(/(\r\n|\r)/g,"\n")
-    .replace(/[™©®¥§]/g,'"')   // common OCR junk
-    .replace(/[°]/g,"o")
-    .replace(/\s+/g," ")
-    .trim();
+    .replace(/[™©®¥§]/g,'"').replace(/[°]/g,"o")
+    .replace(/\s+/g," ").trim();
 }
 function snapRank(x){
   const s=String(x).toLowerCase();
@@ -114,9 +112,8 @@ function snapToKnownCard(text){
 }
 
 /* =========================================================
-   Overlay Camera
-   - hides page scroll
-   - prevents keyboard by blurring + readonly on textarea
+   Overlay Camera (in-page)
+   - blur + readonly textarea to suppress mobile keyboard
    ========================================================= */
 let overlay, videoEl, stream=null, deviceId=null;
 
@@ -154,7 +151,7 @@ function buildOverlayOnce(){
     try{
       const b64 = snapshotToBase64();
       await processImageBase64(b64);
-      stopCameraOverlay();  // do NOT focus the editor afterward
+      stopCameraOverlay();  // do NOT focus textarea after scan
     }catch(e){ console.error(e); alert("Capture failed. Try again."); }
   });
   flipBtn.addEventListener("click", async()=>{ await chooseCamera(); });
@@ -163,8 +160,7 @@ function buildOverlayOnce(){
 
 async function openCameraOverlay(){
   buildOverlayOnce();
-  // prevent keyboard: blur + readonly while overlay active
-  if(taEl){ taEl.blur(); taEl.setAttribute("readonly",""); }
+  if(taEl){ taEl.blur(); taEl.setAttribute("readonly",""); }  // prevent keyboard
   document.body.classList.add("scan-open");
   overlay.style.display = "flex";
   await chooseCamera(true);
@@ -173,8 +169,7 @@ function stopCameraOverlay(){
   overlay.style.display = "none";
   document.body.classList.remove("scan-open");
   if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
-  // allow typing again but DO NOT focus (prevents mobile keyboard popping)
-  if(taEl){ taEl.removeAttribute("readonly"); }
+  if(taEl){ taEl.removeAttribute("readonly"); }               // allow typing again (no focus)
 }
 async function chooseCamera(preferEnv=false){
   const kinds = await navigator.mediaDevices.enumerateDevices();
@@ -217,11 +212,11 @@ async function processImageBase64(b64){
   if(!snapped){ alert("Couldn’t read a valid card. Try again with flatter, brighter shot."); return; }
 
   const json = JSON.stringify(snapped, null, 2);
-  if(taEl){ taEl.value=json; highlight(json); }         // do NOT focus (no keyboard)
+  if(taEl){ taEl.value=json; highlight(json); }  // do NOT focus (prevents keyboard)
 }
 
 /* =========================================================
-   Card rendering
+   Card rendering (unchanged)
    ========================================================= */
 const W = CANVAS.width, H = CANVAS.height;
 const suitChar=(s)=>({clubs:"♣",spades:"♠",hearts:"♥",diamonds:"♦"}[(s||"").toLowerCase()]||"?");
@@ -323,7 +318,7 @@ function drawToken(ctx,t,cx,cy,s){
 }
 
 /* =========================================================
-   Examples (no file attr)
+   Examples
    ========================================================= */
 const EXAMPLES = {
   "Number (8♣)": { rank:"8", suit:"clubs", type:"number" },
@@ -365,7 +360,6 @@ if(btnExamples && taEl){
     const key=keys[Math.floor(Math.random()*keys.length)];
     const json=JSON.stringify(EXAMPLES[key], null, 2);
     taEl.value=json; highlight(json);
-    // keep focus off to avoid mobile keyboard popping
   });
 }
 
