@@ -3,62 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Source Code Playing Cards</title>
+    <title>Pure Code Playing Cards</title>
     <link rel="stylesheet" href="./style.css" />
-    <!-- Client-side OCR -->
-    <script
-      src="https://unpkg.com/tesseract.js@4.1.1/dist/tesseract.min.js"
-      defer
-    ></script>
   </head>
   <body>
-    <!-- Buttons -->
-    <div class="buttons">
-      <button id="scanBtn">Scan Card Code</button>
-      <button id="examplesBtn">Examples</button>
+    <div class="container stack">
+      <!-- Buttons row -->
+      <div class="row center">
+        <button id="scanBtn">Scan Card Code</button>
+        <button id="examplesBtn">Examples</button>
+      </div>
+
+      <!-- Editor -->
+      <div class="editor">
+        <pre id="hl" class="code"></pre>
+        <textarea id="cardInput" spellcheck="false" placeholder=""></textarea>
+      </div>
+
+      <!-- Render button -->
+      <div class="row center">
+        <button id="renderBtn" class="primary">Render Card</button>
+      </div>
+
+      <!-- Canvas -->
+      <canvas
+        id="cardCanvas"
+        width="360"
+        height="528"
+        aria-label="card canvas"
+      ></canvas>
     </div>
-
-    <!-- JSON editor -->
-    <div class="editor" aria-label="JSON editor">
-      <pre id="hl" class="code"></pre>
-      <textarea id="cardInput" spellcheck="false"></textarea>
-    </div>
-
-    <!-- Render button -->
-    <div class="buttons">
-      <button id="renderBtn" class="primary">Render Card</button>
-    </div>
-
-    <!-- Card canvas -->
-    <canvas
-      id="cardCanvas"
-      width="360"
-      height="528"
-      aria-label="card canvas"
-    ></canvas>
-
-    <!-- Hidden input for scan -->
-    <input
-      id="imageInput"
-      type="file"
-      accept="image/*"
-      capture="environment"
-      style="display: none"
-    />
 
     <script src="./app.js" defer></script>
-
-    <!-- iFrame auto-resize -->
-    <script>
-      function sendHeight() {
-        window.parent.postMessage(
-          { type: "resize-iframe", height: document.body.scrollHeight },
-          "*"
-        );
-      }
-
-      new ResizeObserver(sendHeight).observe(document.body);
-      sendHeight();
-    </script>
   </body>
 </html>
