@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
+    <!-- Top buttons -->
+    <div class="buttons buttons-top">
+      <button id="scanBtn">Scan Card Code</button>
+      <button id="examplesBtn">Examples</button>
+    </div>
+
     <!-- Editor (always visible, starts empty) -->
     <div class="editor" aria-label="JSON editor">
       <pre id="hl" class="code"></pre>
@@ -19,13 +25,12 @@
       ></textarea>
     </div>
 
-    <div class="buttons">
-      <button id="scanBtn">Scan Card Code</button>
-      <button id="examplesBtn">Examples</button>
-      <button id="renderBtn">Render Card</button>
+    <!-- Bottom primary action -->
+    <div class="buttons buttons-bottom">
+      <button id="renderBtn" class="primary">Render Card</button>
     </div>
 
-    <!-- Canvas draws 360x528; CSS scales fluidly on small screens -->
+    <!-- Card canvas -->
     <canvas
       id="cardCanvas"
       width="360"
@@ -33,9 +38,7 @@
       aria-label="card canvas"
     ></canvas>
 
-    <script>
-      /* If you want to override at runtime: window.VISION_FN_URL = "https://<your-cloud-fn-url>"; */
-    </script>
+    <!-- Optional: override OCR URL with window.VISION_FN_URL before app.js -->
     <script src="./app.js" defer></script>
   </body>
 </html>
