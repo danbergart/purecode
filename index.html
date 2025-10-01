@@ -40,5 +40,19 @@
 
     <!-- Optional: override OCR URL with window.VISION_FN_URL before app.js -->
     <script src="./app.js" defer></script>
+<script>
+function sendHeight() {
+  window.parent.postMessage(
+    { type: "resize-iframe", height: document.body.scrollHeight },
+    "*"
+  );
+}
+
+new ResizeObserver(sendHeight).observe(document.body);
+sendHeight();
+</script>
+
+
+    
   </body>
 </html>
