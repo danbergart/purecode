@@ -1,39 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Pure Code Playing Cards</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <div class="container stack">
+    <div class="container stack" id="appRoot">
       <!-- Buttons row -->
-      <div class="row center">
-        <button id="scanBtn">Scan Card Code</button>
-        <button id="examplesBtn">Examples</button>
+      <div class="row center gap">
+        <button id="scanBtn" class="btn">Scan Card Code</button>
+        <button id="examplesBtn" class="btn">Examples</button>
       </div>
 
-      <!-- Editor -->
-      <div class="editor">
-        <pre id="hl" class="code"></pre>
-        <textarea id="cardInput" spellcheck="false" placeholder=""></textarea>
-      </div>
+      <!-- Editor (single textarea to avoid duplicate text) -->
+      <textarea
+        id="cardInput"
+        class="editor"
+        spellcheck="false"
+        placeholder="Paste or type card JSON here…"
+      ></textarea>
 
       <!-- Render button -->
       <div class="row center">
-        <button id="renderBtn" class="primary">Render Card</button>
+        <button id="renderBtn" class="btn primary">Render Card</button>
       </div>
 
       <!-- Canvas -->
-      <canvas
-        id="cardCanvas"
-        width="360"
-        height="528"
-        aria-label="card canvas"
-      ></canvas>
+      <div class="row center">
+        <canvas
+          id="cardCanvas"
+          width="360"
+          height="528"
+          aria-label="card canvas"
+        ></canvas>
+      </div>
     </div>
 
-    <script src="./app.js" defer></script>
+    <!-- Camera overlay is created dynamically by JS -->
+
+    <script src="./app.js"></script>
+
+    <!-- Optional: auto-resize the Shopify iframe (leave in; harmless if not embedded) -->
+    <script>
+      const postSize = () => {
+        const h = document.documentElement.scrollHeight;
+        parent?.postMessage?.({ type: "purecode-resize", height: h }, "*");
+      };
+      new ResizeObserver(postSize).observe(document.documentElement);
+      window.addEventListener("load", postSize);
+    </script>
   </body>
 </html>
