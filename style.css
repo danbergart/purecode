@@ -1,45 +1,138 @@
-/* Editor (textarea on top of highlighted <pre>) */
-.editor {
-  position: relative;
-  width: min(920px, 90vw);
-  margin: 0 auto 12px;
-  background: #000;
-  border: 1px solid var(--line, #ddd);
-  border-radius: 12px;
-  overflow: hidden;
-  text-align: left;
+:root {
+  --bg: #eee; /* page */
+  --panel: #000; /* editor */
+  --card: #fff; /* canvas background */
+  --ink: #111; /* UI text */
+  --muted: #777;
+  --line: #d0d0d0;
+  --btn: #202020;
+  --btnText: #fff;
+  --btnPrimary: #111;
+  --btnPrimaryText: #fff;
+  --radius: 12px;
 }
 
-.editor .code {
-  position: absolute;
-  inset: 0;
-  padding: 14px;
-  font: 14px/1.45 ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New", monospace;
-  white-space: pre-wrap;
-  word-break: break-word;
-  pointer-events: none;   /* clicks go to the textarea */
-  z-index: 0;
+* {
+  box-sizing: border-box;
 }
 
-textarea#cardInput {
-  position: relative;
-  z-index: 1;
+html,
+body {
   margin: 0;
-  padding: 14px;
-  font: 14px/1.45 ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New", monospace;
-  background: transparent;
-  color: transparent;     /* 👈 hide text so it’s not duplicated */
-  caret-color: #fff;      /* keep caret visible */
-  border: none;
-  outline: none;
-  resize: vertical;
-  min-height: 160px;
-  white-space: pre-wrap;
-  word-break: break-word;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.45 ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New",
+    monospace;
 }
 
-/* token colors (unchanged) */
-.k { color: #ff9900; }  /* keys */
-.s { color: #33ff66; }  /* strings */
-.n { color: #00ccff; }  /* numbers */
-.p { color: #bdbdbd; }  /* punctuation */
+.container {
+  max-width: 940px;
+  margin: 24px auto 64px;
+  padding: 0 16px;
+}
+
+.stack > * {
+  margin-bottom: 22px;
+}
+
+.row.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gap {
+  gap: 12px;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--btn);
+  color: var(--btnText);
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn.primary {
+  background: var(--btnPrimary);
+  color: var(--btnPrimaryText);
+  border-color: #000;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.editor {
+  width: 100%;
+  min-height: 180px;
+  background: var(--panel);
+  color: #fff; /* make text visible (white) */
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  resize: vertical;
+  outline: none;
+}
+
+canvas {
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+  width: 360px;
+  height: auto;
+}
+
+/* Camera overlay — sticks to TOP of iframe */
+#camOverlay {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  z-index: 9999;
+  overflow: auto;
+}
+#camBox {
+  margin: 0 auto;
+  width: min(720px, 94vw);
+  background: #000;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+#video {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  background: #000;
+}
+#camButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+}
+#camButtons .btn {
+  background: #111;
+}
+#camButtons .primary {
+  background: #0b5;
+  border-color: #0b5;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 0 12px;
+  }
+  canvas {
+    width: 86vw;
+  }
+  .row.center {
+    flex-wrap: wrap;
+  }
+}
