@@ -5,40 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Source Code Playing Cards</title>
     <link rel="stylesheet" href="./style.css" />
-    <script
-      src="https://unpkg.com/tesseract.js@4.1.1/dist/tesseract.min.js"
-      defer
-    ></script>
   </head>
   <body>
-    <h1>Source Code Playing Cards</h1>
-    <p>Paste or type a card JSON below, scan a photo, and click render.</p>
-
-    <div class="buttons top">
-      <button id="scanBtn" class="primary" type="button">Scan Card Code</button>
-      <button id="typeBtn" class="ghost" type="button">
-        Type code instead
-      </button>
-    </div>
-
-    <div id="editorWrap" class="editor" aria-label="JSON editor">
+    <!-- Editor (always visible, starts empty) -->
+    <div class="editor" aria-label="JSON editor">
       <pre id="hl" class="code"></pre>
-      <textarea id="cardInput" spellcheck="false">
-{
-  "rank": "8",
-  "suit": "clubs",
-  "type": "number"
-}</textarea
-      >
+      <textarea
+        id="cardInput"
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+        autocorrect="off"
+      ></textarea>
     </div>
 
     <div class="buttons">
-      <button id="renderBtn" type="button">Render Card</button>
-      <button id="examplesBtn" type="button">Examples</button>
+      <button id="scanBtn">Scan Card Code</button>
+      <button id="examplesBtn">Examples</button>
+      <button id="renderBtn">Render Card</button>
     </div>
 
-    <input id="imageInput" type="file" accept="image/*" style="display: none" />
-
+    <!-- Canvas draws 360x528; CSS scales fluidly on small screens -->
     <canvas
       id="cardCanvas"
       width="360"
@@ -46,24 +33,9 @@
       aria-label="card canvas"
     ></canvas>
 
-    <div id="camModal" class="cam-modal hidden" aria-hidden="true">
-      <div
-        class="cam-sheet"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Scan card code"
-      >
-        <video id="camVideo" playsinline autoplay muted></video>
-        <div class="cam-actions">
-          <button id="captureBtn" class="primary" type="button">Capture</button>
-          <button id="selectCamBtn" class="ghost" type="button">
-            Select camera
-          </button>
-          <button id="cancelCamBtn" type="button">Cancel</button>
-        </div>
-      </div>
-    </div>
-
+    <script>
+      /* If you want to override at runtime: window.VISION_FN_URL = "https://<your-cloud-fn-url>"; */
+    </script>
     <script src="./app.js" defer></script>
   </body>
 </html>
