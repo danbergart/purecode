@@ -4,13 +4,16 @@
   --muted: #666;
 
   --panel: #000; /* editor background (console) */
-  --line: #d0d0d0; /* thin borders on light UI */
+  --line: #dcdcdc; /* thin borders on light UI */
 
   /* syntax colors */
   --tok-key: #ff9900;
   --tok-str: #33ff66;
   --tok-num: #00ccff;
   --tok-punc: #bdbdbd;
+
+  --primary: #111; /* filled primary button bg */
+  --primaryText: #fff; /* filled primary button text */
 }
 
 * {
@@ -27,11 +30,58 @@ body {
   text-align: center;
 }
 
+/* Buttons */
+.buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.buttons-top {
+  margin: 4px 0 14px;
+}
+.buttons-bottom {
+  margin: 14px 0 20px;
+}
+
+button {
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--line);
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+  transition: transform 80ms ease, filter 120ms ease, opacity 120ms ease;
+}
+button:hover {
+  background: #fafafa;
+}
+button:active {
+  transform: translateY(1px);
+}
+button.busy {
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+button.primary {
+  background: var(--primary);
+  color: var(--primaryText);
+  border-color: #000;
+}
+button.primary:hover {
+  filter: brightness(1.05);
+}
+
 /* Editor (textarea on top of highlighted <pre>) */
 .editor {
   position: relative;
   width: min(920px, 90vw);
-  margin: 0 auto 14px;
+  margin: 0 auto;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -53,6 +103,7 @@ pre.code {
   color: #fff;
   pointer-events: none;
   min-height: 160px;
+  opacity: 0.35; /* dim so white typed text is readable */
 }
 
 /* syntax tokens */
@@ -73,42 +124,13 @@ textarea#cardInput {
   position: absolute;
   inset: 0;
   background: transparent;
-  color: transparent; /* caret only; highlight beneath shows colored text */
+  color: #fff; /* <-- visible white typing */
+  -webkit-text-fill-color: #fff; /* fix for some mobile browsers */
   caret-color: #fff;
   border: none;
   outline: none;
   resize: vertical;
   min-height: 160px;
-}
-
-/* Buttons */
-.buttons {
-  margin: 10px 0 26px;
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-button {
-  background: #fff;
-  color: var(--text);
-  border: 1px solid var(--line);
-  padding: 10px 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 14px;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
-}
-button:hover {
-  background: #fafafa;
-}
-button:active {
-  transform: translateY(1px);
-}
-button.busy {
-  opacity: 0.65;
-  pointer-events: none;
 }
 
 /* Card canvas — white card on light page */
@@ -119,9 +141,11 @@ canvas {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 6px 18px rgba(0, 0, 0, 0.06);
   width: 360px;
   height: auto;
+  margin: 0 auto;
+  display: block;
 }
 
-/* Overlay (camera) inherits styles from JS; no page scroll when open */
+/* Overlay prevents page scroll when open */
 body.scan-open {
   overflow: hidden;
 }
